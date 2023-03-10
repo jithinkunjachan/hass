@@ -62,7 +62,6 @@ variables:
   var_color_step_sat: !input color_step_sat
 trigger:
 - platform: device
-  domain: mqtt
   event_data:
     device_id: !input remote
 action:
