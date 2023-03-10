@@ -11,7 +11,7 @@ blueprint:
       description: Select the remote control you wish to use.
       selector:
         device:
-          manufacturer: IKEA of Sweden
+          manufacturer: IKEA
     light:
       name: Light
       description: Select the light entity you wish to control.
