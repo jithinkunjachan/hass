@@ -52,25 +52,19 @@ blueprint:
           mode: slider
       default: 5
 mode: restart
-
-max_exceeded: silent
-
-trigger:
-  - platform: state
-    entity_id: !input 'remote'
-    attribute: action
-  
 variables:
   command: '{{ trigger.to_state.state }}'
   var_light: !input light
   var_speed: !input speed
   var_color_step_hue: !input color_step_hue
   var_color_step_sat: !input color_step_sat
-
+trigger:
+  - platform: state
+    entity_id: !input 'remote'
+    attribute: action
 condition:
   - condition: template
     value_template: "{{ command != ''}}"
- 
 action:
   - choose:
     - conditions:
