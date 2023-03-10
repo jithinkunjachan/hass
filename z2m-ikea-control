@@ -87,12 +87,17 @@ action:
   - conditions:
     - '{{ command == ''brightness_move_up'' }}'
     sequence:
-    - service: light.turn_on
-      target:
-        entity_id: !input light
-      data:
-        brightness_step_pct: 20
-        transition: '{{ (var_speed / 1000)|float }}'
+    - repeat:
+        while: []
+        sequence:
+        - service: light.turn_on
+          target:
+            entity_id: !input light
+          data:
+            brightness_step_pct: 10
+            transition: '{{ (var_speed / 1000)|float }}'
+        - delay:
+            milliseconds: !input speed
   - conditions:
     - '{{ command == ''brightness_move_down'' }}'
     sequence:
@@ -129,20 +134,4 @@ action:
         - '{{(state_attr(var_light, "hs_color")[0] + var_color_step_hue) % 360}}'
         - '{{ state_attr(var_light, "hs_color")[1] }}'
         transition: '{{ (var_speed / 1000)|float }}'
-  # - conditions:
-  #   - '{{ command == ''brightness_up_click'' }}'
-  #   sequence: !input brightness_up_click
-  - conditions:
-    - '{{ command == ''brightness_down_click'' }}'
-    sequence:
-    - repeat:
-        while: []
-        sequence:
-        - service: light.turn_on
-          target:
-            entity_id: !input light
-          data:
-            brightness_step_pct: -10
-            transition: '{{ (var_speed / 1000)|float }}'
-        - delay:
-            milliseconds: !input speed
+
