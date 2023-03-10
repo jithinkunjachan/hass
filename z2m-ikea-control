@@ -68,18 +68,6 @@ condition:
 action:
 - choose:
   - conditions:
-    - '{{ command == ''on'' }}'
-    sequence:
-    - service: light.turn_on
-      target:
-        entity_id: !input light
-  - conditions:
-    - '{{ command == ''off'' }}'
-    sequence:
-    - service: light.turn_off
-      target:
-        entity_id: !input light
-  - conditions:
     - '{{ command == ''brightness_move_up'' }}'
     sequence:
     - repeat:
@@ -129,4 +117,3 @@ action:
         - '{{(state_attr(var_light, "hs_color")[0] + var_color_step_hue) % 360}}'
         - '{{ state_attr(var_light, "hs_color")[1] }}'
         transition: '{{ (var_speed / 1000)|float }}'
-
