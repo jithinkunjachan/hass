@@ -11,61 +11,46 @@ blueprint:
         entity:
           integration: mqtt
           domain: sensor
-    on_button_short:
-      name: "[Normal-Button] On button short"
-      description: Action to run when ON button SHORT press
-      default: []
+    light:
+      name: Light
+      description: Select the light entity you wish to control.
       selector:
-        action: {}
-    off_button_short:
-      name: "[Normal-Button] Off button short"
-      description: Action to run when OFF button SHORT pressed
-      default: []
+        entity:
+          domain: light
+          multiple: false
+    speed:
+      name: Speed
+      description: The speed in which to update the light when the button is held.
       selector:
-        action: {}
-    on_button_long:
-      name: "[Normal-Button] On button long"
-      description: Action to run when ON button LONG pressed (brightness up)
-      default: []
+        number:
+          min: 0.0
+          max: 1000.0
+          step: 50.0
+          unit_of_measurement: milliseconds
+          mode: slider
+      default: 100
+    color_step_hue:
+      name: Color Step Hue
+      description: The color step change for the hue value
       selector:
-        action: {}
-    off_button_long:
-      name: "[Normal-Button] Off button long"
-      description: Action to run when OFF button LONG pressed (brightness down)
-      default: []
+        number:
+          min: 1.0
+          max: 360.0
+          step: 1.0
+          unit_of_measurement: hue
+          mode: slider
+      default: 10
+    color_step_sat:
+      name: Color Step Saturation
+      description: The color step change for the saturation value
       selector:
-        action: {}
-    toggle:
-      name: "[5-Button] Toggle"
-      description: Action to run when Toggle Button pressed 
-      default: []
-      selector:
-        action: {}
-    arrow_left_click:
-      name: "[5-Button] Arrow Left Click"
-      description: Action to run when Left arrow button SHORT pressed
-      default: []
-      selector:
-        action: {}
-    arrow_right_click:
-      name: "[5-Button] Arrow Right Click"
-      description: Action to run when Right arrow button SHORT pressed
-      default: []
-      selector:
-        action: {}
-    brightness_up_click:
-      name: "[5-Button] Arrow Up Click"
-      description: Action to run when Up arrow (Brightness down) button SHORT pressed
-      default: []
-      selector:
-        action: {}
-    brightness_down_click:
-      name: "[5-Button] Arrow Down Click"
-      description: Action to run when Down arrow (Brightness down) button SHORT pressed
-      default: []
-      selector:
-        action: {}
-
+        number:
+          min: 1.0
+          max: 100.0
+          step: 1.0
+          unit_of_measurement: saturation
+          mode: slider
+      default: 5
 mode: restart
 
 max_exceeded: silent
@@ -77,6 +62,10 @@ trigger:
   
 variables:
   command: '{{ trigger.to_state.state }}'
+  var_light: !input light
+  var_speed: !input speed
+  var_color_step_hue: !input color_step_hue
+  var_color_step_sat: !input color_step_sat
 
 condition:
   - condition: template
@@ -86,28 +75,53 @@ action:
   - choose:
     - conditions:
       - '{{ command == ''on'' }}'
-      sequence: !input 'on_button_short'
+      sequence: 
+      - service: light.turn_on
+      target:
+        entity_id: !input light
     - conditions:
       - '{{ command == ''off'' }}'
-      sequence: !input 'off_button_short'
-    - conditions:
-      - '{{ command == ''brightness_move_up'' }}'
-      sequence: !input 'on_button_long'
-    - conditions:
-      - '{{ command == ''brightness_move_down'' }}'
-      sequence: !input 'off_button_long'
-    - conditions:
-      - '{{ command == ''toggle'' }}'
-      sequence: !input 'toggle'
+      sequence: 
+      - service: light.turn_off
+      target:
+        entity_id: !input light
     - conditions:
       - '{{ command == ''arrow_left_click'' }}'
-      sequence: !input 'arrow_left_click'
+      sequence: !input 'arrow_left_click'sequence:
+      - service: light.turn_on
+        target:
+          entity_id: !input light
+        data:
+          hs_color:
+          - '{{ state_attr(var_light, "hs_color")[0] }}'
+          - '{{(state_attr(var_light, "hs_color")[1] + var_color_step_sat) % 100}}'
+          transition: '{{ (var_speed / 1000)|float }}'
     - conditions:
       - '{{ command == ''arrow_right_click'' }}'
-      sequence: !input 'arrow_right_click'
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: !input light
+        data:
+          hs_color:
+          - '{{(state_attr(var_light, "hs_color")[0] + var_color_step_hue) % 360}}'
+          - '{{ state_attr(var_light, "hs_color")[1] }}'
+          transition: '{{ (var_speed / 1000)|float }}'
     - conditions:
       - '{{ command == ''brightness_up_click'' }}'
-      sequence: !input 'brightness_up_click'
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: !input light
+        data:
+          brightness_step_pct: 10
+          transition: '{{ (var_speed / 1000)|float }}'
     - conditions:
       - '{{ command == ''brightness_down_click'' }}'
-      sequence: !input 'brightness_down_click'
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: !input light
+        data:
+          brightness_step_pct: -20
+          transition: '{{ (var_speed / 1000)|float }}'
