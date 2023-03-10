@@ -56,7 +56,7 @@ blueprint:
           unit_of_measurement: saturation
           mode: slider
       default: 5
-mode: single
+mode: restart
 max_exceeded: silent
 trigger:
 - platform: state
@@ -91,7 +91,7 @@ action:
       target:
         entity_id: !input light
       data:
-        brightness_step_pct: 20
+        brightness_step_pct: 10
         transition: '{{ (var_speed / 1000)|float }}'
   - conditions:
     - '{{ command == ''brightness_move_down'' }}'
@@ -100,7 +100,7 @@ action:
       target:
         entity_id: !input light
       data:
-        brightness_step_pct: -20
+        brightness_step_pct: -10
         transition: '{{ (var_speed / 1000)|float }}'
   # - conditions:
   #   - '{{ command == ''toggle'' }}'
