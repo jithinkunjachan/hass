@@ -77,11 +77,11 @@ action:
       - '{{ command == ''on'' }}'
       sequence: 
       - service: light.turn_on
-      target:
-        entity_id: !input light
+        target:
+          entity_id: !input light
     - conditions:
       - '{{ command == ''off'' }}'
       sequence: 
       - service: light.turn_off
-      target:
-        entity_id: !input light
+        target:
+          entity_id: !input light
