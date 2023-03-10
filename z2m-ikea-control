@@ -1,8 +1,3 @@
-
-# this is forked from https://gist.github.com/pavax/4ab861e102a37343fc5c39ea371bfb1a, 
-# thanks pavax for doing everything :) I only changed trigger and command filter to
-# make it work for my scenario
-
 blueprint:
   name: '[Z2M] Generic Ikea Remote Control - Using state instead of action'
   description: Blueprint for Ikea Remote Controls (On/Off, 5-Button, Shortuct)
@@ -75,13 +70,13 @@ action:
   - conditions:
     - '{{ command == ''on'' }}'
     sequence:
-    - service: light.turn_off
+    - service: light.turn_on
       target:
         entity_id: !input light
   - conditions:
     - '{{ command == ''off'' }}'
     sequence:
-    - service: light.turn_on
+    - service: light.turn_off
       target:
         entity_id: !input light
   - conditions:
