@@ -56,7 +56,7 @@ blueprint:
           unit_of_measurement: saturation
           mode: slider
       default: 5
-mode: restart
+mode: single
 max_exceeded: silent
 trigger:
 - platform: state
