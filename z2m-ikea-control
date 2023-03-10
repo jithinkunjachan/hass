@@ -61,10 +61,9 @@ variables:
   var_color_step_hue: !input color_step_hue
   var_color_step_sat: !input color_step_sat
 trigger:
-- platform: event
-  event_type: zha_event
-  event_data:
-    device_id: !input remote
+- platform: device
+  domain: mqtt
+  device_id: !input remote
 action:
 - choose:
   - conditions:
