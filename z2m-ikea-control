@@ -12,8 +12,6 @@ blueprint:
       selector:
         device:
           manufacturer: IKEA of Sweden
-          model: Remote Control N2
-          multiple: false
     light:
       name: Light
       description: Select the light entity you wish to control.
