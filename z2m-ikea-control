@@ -72,18 +72,36 @@ condition:
   value_template: '{{ command != ''''}}'
 action:
 - choose:
-  # - conditions:
-  #   - '{{ command == ''on'' }}'
-  #   sequence: !input on_button_short
-  # - conditions:
-  #   - '{{ command == ''off'' }}'
-  #   sequence: !input off_button_short
-  # - conditions:
-  #   - '{{ command == ''brightness_move_up'' }}'
-  #   sequence: !input on_button_long
-  # - conditions:
-  #   - '{{ command == ''brightness_move_down'' }}'
-  #   sequence: !input off_button_long
+  - conditions:
+    - '{{ command == ''on'' }}'
+    sequence:
+    - service: light.turn_off
+      target:
+        entity_id: !input light
+  - conditions:
+    - '{{ command == ''off'' }}'
+    sequence:
+    - service: light.turn_on
+      target:
+        entity_id: !input light
+  - conditions:
+    - '{{ command == ''brightness_move_up'' }}'
+    sequence:
+    - service: light.turn_on
+      target:
+        entity_id: !input light
+      data:
+        brightness_step_pct: 20
+        transition: '{{ (var_speed / 1000)|float }}'
+  - conditions:
+    - '{{ command == ''brightness_move_down'' }}'
+    sequence:
+    - service: light.turn_on
+      target:
+        entity_id: !input light
+      data:
+        brightness_step_pct: -20
+        transition: '{{ (var_speed / 1000)|float }}'
   # - conditions:
   #   - '{{ command == ''toggle'' }}'
   #   sequence: !input toggle
