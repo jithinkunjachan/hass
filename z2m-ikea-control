@@ -1,5 +1,5 @@
 blueprint:
-  name: ZHA - IKEA TRADFRI - 4 Button Remote - Color Lights
+  name: Z2M - IKEA TRADFRI - 4 Button Remote - Color Lights
   description: This automation simulates the use of the IKEA TRADFRI remote control
     connected through ZHA. Button Up and Button Down = Turn On and Turn Off. Holdin
     Button Up or holding Button Down = Increase or decrease of brightness. Button
@@ -12,6 +12,7 @@ blueprint:
       selector:
         device:
           manufacturer: IKEA
+          multiple: false
     light:
       name: Light
       description: Select the light entity you wish to control.
@@ -52,7 +53,7 @@ blueprint:
           unit_of_measurement: saturation
           mode: slider
       default: 5
-  source_url: https://gist.github.com/cehberlin/be7b5d34aecb71aea0dd9514651e802d
+  source_url: https://github.com/jithinkunjachan/hass/edit/main/z2m-ikea-control
 mode: restart
 max_exceeded: silent
 variables:
@@ -61,8 +62,8 @@ variables:
   var_color_step_hue: !input color_step_hue
   var_color_step_sat: !input color_step_sat
 trigger:
-- platform: device
-  domain: mqtt
+- platform: event
+  event_type: zha_event
   event_data:
     device_id: !input remote
 action:
