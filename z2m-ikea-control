@@ -109,7 +109,7 @@ action:
             milliseconds: !input speed
   - conditions:
     - '{{ command == ''arrow_left_click'' }}'
-    - '{{ states(var_light) == 'on' }}'
+    - '{{ states(var_light) == ''on'' }}'
     sequence:
     - service: light.turn_on
       target:
@@ -121,7 +121,7 @@ action:
         transition: '{{ (var_speed / 1000)|float }}'
   - conditions:
     - '{{ command == ''arrow_right_click'' }}'
-    - '{{ states(var_light) == 'on' }}'
+    - '{{ states(var_light) == ''on'' }}'
     sequence:
     - service: light.turn_on
       target:
